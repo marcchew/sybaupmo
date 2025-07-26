@@ -2,4 +2,5 @@ Flask
 Flask-SQLAlchemy
 Flask-Session
 openai
-
+dotenv
+python-dotenv
