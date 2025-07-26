@@ -29,12 +29,6 @@ def create_user(username, password):
     db.session.add(user)
     db.session.commit()
 
-@app.before_first_request
-def init_db():
-    db.create_all()
-    if not User.query.filter_by(username='admin').first():
-        create_user('admin', 'password')
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -213,4 +207,8 @@ def chat():
     return jsonify({"reply": reply, "tool_calls": outputs})
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        if not User.query.filter_by(username='admin').first():
+            create_user('admin', 'password')
     app.run(debug=True)

@@ -1,4 +1,4 @@
-.env
 flask_session
 __pycache__
 instance
+.env
