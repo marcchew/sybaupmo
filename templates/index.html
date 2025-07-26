@@ -21,6 +21,17 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-9 p-3">
+      <div class="mb-2" id="toolbar">
+        <button id="select-btn" class="btn btn-sm btn-secondary">Select</button>
+        <button id="draw-btn" class="btn btn-sm btn-secondary">Draw</button>
+        <button id="rect-btn" class="btn btn-sm btn-secondary">Rect</button>
+        <button id="circle-btn" class="btn btn-sm btn-secondary">Circle</button>
+        <button id="text-btn" class="btn btn-sm btn-secondary">Text</button>
+        <input type="file" id="upload" class="form-control form-control-sm d-inline" style="width:auto;" />
+        <input type="color" id="fill-color" value="#ff0000" class="form-control form-control-sm d-inline" style="width:40px;" />
+        <input type="color" id="stroke-color" value="#000000" class="form-control form-control-sm d-inline" style="width:40px;" />
+        <input type="number" id="stroke-width" value="1" min="1" max="10" class="form-control form-control-sm d-inline" style="width:60px;" />
+      </div>
       <canvas id="c" width="800" height="600" class="border"></canvas>
     </div>
     <div class="col-md-3 p-3" id="sidebar">

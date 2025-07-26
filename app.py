@@ -76,6 +76,41 @@ def build_tools():
             },
             "strict": True
         },
+        {
+            "type": "function",
+            "name": "draw_circle",
+            "description": "Draw a circle on the canvas.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "left": {"type": "number"},
+                    "top": {"type": "number"},
+                    "radius": {"type": "number"},
+                    "fill": {"type": "string"}
+                },
+                "required": ["left", "top", "radius"],
+                "additionalProperties": False
+            },
+            "strict": True
+        },
+        {
+            "type": "function",
+            "name": "add_text",
+            "description": "Add text to the canvas.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "left": {"type": "number"},
+                    "top": {"type": "number"},
+                    "text": {"type": "string"},
+                    "fill": {"type": "string"},
+                    "font_size": {"type": "number"}
+                },
+                "required": ["left", "top", "text"],
+                "additionalProperties": False
+            },
+            "strict": True
+        }
     ]
 
 # Dummy function to show tool calling idea
@@ -88,6 +123,25 @@ def draw_rectangle(left, top, width, height, fill="#ff0000"):
         "width": width,
         "height": height,
         "fill": fill
+    }
+
+def draw_circle(left, top, radius, fill="#ff0000"):
+    return {
+        "action": "draw_circle",
+        "left": left,
+        "top": top,
+        "radius": radius,
+        "fill": fill
+    }
+
+def add_text(left, top, text, fill="#000000", font_size=20):
+    return {
+        "action": "add_text",
+        "left": left,
+        "top": top,
+        "text": text,
+        "fill": fill,
+        "font_size": font_size
     }
 
 @app.route('/api/chat', methods=['POST'])
@@ -118,27 +172,38 @@ def chat():
     )
 
     outputs = []
-    for out in response.output:
-        if out['type'] == 'function_call':
+    while True:
+        new_call = False
+        for out in response.output:
+            if out['type'] != 'function_call':
+                continue
             tool_name = out['name']
             args = out.get('arguments', '{}')
+            params = eval(args)
+            result = None
             if tool_name == 'draw_rectangle':
-                params = eval(args)
                 result = draw_rectangle(**params)
+            elif tool_name == 'draw_circle':
+                result = draw_circle(**params)
+            elif tool_name == 'add_text':
+                result = add_text(**params)
+            if result:
+                outputs.append(result)
                 session['messages'].append(out)
                 session['messages'].append({
                     "type": "function_call_output",
                     "call_id": out['call_id'],
                     "output": str(result)
                 })
-                # call model again with new message
                 response = client.responses.create(
                     model="gpt-4.1",
                     input=session['messages'],
                     tools=tools
                 )
-                outputs = response.output
+                new_call = True
                 break
+        if not new_call:
+            break
 
     reply = response.output_text
     session['messages'].append({"role": "assistant", "content": reply})

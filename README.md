@@ -1,9 +1,11 @@
 # Photoshop-like Editor with AI Companion
 
-This project is a simple image editor that uses Fabric.js for the canvas
-and Bootstrap for styling. A sidebar on the right hosts an AI companion
-which can interact with the canvas using the OpenAI API. The backend uses
-Flask with SQLite for user logins and stores chat history in the session.
+This project is an advanced image editor that uses Fabric.js for drawing
+tools and Bootstrap for styling. A sidebar on the right hosts an AI
+companion that communicates with the OpenAI API. The AI can see a preview of
+the canvas and can call drawing tools (rectangle, circle and text) in
+multiple turns. The backend relies on Flask with SQLite for logins and keeps
+chat history in the session.
 
 ## Setup
 
